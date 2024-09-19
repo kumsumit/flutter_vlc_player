@@ -5,17 +5,12 @@ import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
 import org.videolan.libvlc.RendererDiscoverer;
 import org.videolan.libvlc.RendererItem;
-import org.videolan.libvlc.interfaces.IMedia;
-import org.videolan.libvlc.interfaces.IVLCVout;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.SurfaceTexture;
 import android.net.Uri;
 import android.util.Base64;
 import android.util.Log;
-import android.view.Surface;
-import android.view.SurfaceView;
 import android.view.View;
 
 import io.flutter.plugin.common.BinaryMessenger;
@@ -25,7 +20,6 @@ import io.flutter.view.TextureRegistry;
 import software.solid.fluttervlcplayer.Enums.HwAcc;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -150,7 +144,7 @@ final class FlutterVlcPlayer implements PlatformView {
                         // Current video track is only available when the media is playing
                         int height = 0;
                         int width = 0;
-                        Media.VideoTrack currentVideoTrack = mediaPlayer.getCurrentVideoTrack();
+                        Media.VideoTrack currentVideoTrack = mediaPlayer. getCurrentVideoTrack();
                         if (currentVideoTrack != null) {
                             height = currentVideoTrack.height;
                             width = currentVideoTrack.width;
@@ -180,7 +174,7 @@ final class FlutterVlcPlayer implements PlatformView {
                                 eventObject.put("speed", mediaPlayer.getRate());
                                 eventObject.put("duration", mediaPlayer.getLength());
                                 eventObject.put("audioTracksCount", mediaPlayer.getAudioTracksCount());
-                                eventObject.put("activeAudioTrack", mediaPlayer.getAudioTrack());
+                                eventObject.put("activeAudioTrack", mediaPlayer .getAudioTrack());
                                 eventObject.put("spuTracksCount", mediaPlayer.getSpuTracksCount());
                                 eventObject.put("activeSpuTrack", mediaPlayer.getSpuTrack());
                                 mediaEventSink.success(eventObject.clone());

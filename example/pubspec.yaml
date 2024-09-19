@@ -3,10 +3,10 @@ description: Demonstrates how to use the flutter_vlc_player plugin.
 publish_to: 'none'
 
 environment:
-  sdk: ">=2.18.0 <4.0.0"
+  sdk: ">=3.5.0 <4.0.0"
 
 dependencies:
-  cupertino_icons: ^1.0.5
+  cupertino_icons: ^1.0.8
   
   flutter:
     sdk: flutter
@@ -14,7 +14,8 @@ dependencies:
   flutter_vlc_player:
     path: ../
 
-  path_provider: ^2.1.1
+  path_provider:
+    git: https://github.com/kumsumit/path_provider.git
 
 dev_dependencies:
   flutter_test:

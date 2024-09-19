@@ -5,12 +5,15 @@ import org.videolan.libvlc.interfaces.IVLCVout;
 
 import android.content.Context;
 import android.graphics.SurfaceTexture;
+import android.os.Build;
 import android.view.TextureView;
 import android.view.View;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
 
 import io.flutter.view.TextureRegistry;
 
@@ -53,8 +56,10 @@ public class VLCTextureView extends TextureView implements TextureView.SurfaceTe
         }
 
         if (mSurfaceTexture != null) {
-            if (!mSurfaceTexture.isReleased()) {
-                mSurfaceTexture.release();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (!mSurfaceTexture.isReleased()) {
+                    mSurfaceTexture.release();
+                }
             }
             mSurfaceTexture = null;
         }
@@ -91,56 +96,62 @@ public class VLCTextureView extends TextureView implements TextureView.SurfaceTe
     private void updateSurfaceTexture() {
         if (this.mTextureEntry != null) {
             final SurfaceTexture texture = this.mTextureEntry.surfaceTexture();
-            if (!texture.isReleased() && (getSurfaceTexture() != texture)) {
-                setSurfaceTexture(texture);
-            }
-        }
-    }
-
-    @Override
-    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-        if (mSurfaceTexture == null || mSurfaceTexture.isReleased()) {
-            mSurfaceTexture = surface;
-
-            if (mMediaPlayer != null) {
-                mMediaPlayer.getVLCVout().setWindowSize(width, height);
-                if (!mMediaPlayer.getVLCVout().areViewsAttached()) {
-                    mMediaPlayer.getVLCVout().setVideoSurface(mSurfaceTexture);
-                    if (!mMediaPlayer.getVLCVout().areViewsAttached()) {
-                        mMediaPlayer.getVLCVout().attachViews(this);
-                    }
-                    mMediaPlayer.setVideoTrackEnabled(true);
-                    if (wasPlaying) {
-                        mMediaPlayer.play();
-                    }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (!texture.isReleased() && (getSurfaceTexture() != texture)) {
+                    setSurfaceTexture(texture);
                 }
             }
+        }
+    }
 
-            wasPlaying = false;
+    @Override
+    public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surface, int width, int height) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (mSurfaceTexture == null || mSurfaceTexture.isReleased()) {
+                mSurfaceTexture = surface;
 
-        } else {
-            if (getSurfaceTexture() != mSurfaceTexture) {
-                setSurfaceTexture(mSurfaceTexture);
+                if (mMediaPlayer != null) {
+                    mMediaPlayer.getVLCVout().setWindowSize(width, height);
+                    if (!mMediaPlayer.getVLCVout().areViewsAttached()) {
+                        mMediaPlayer.getVLCVout().setVideoSurface(mSurfaceTexture);
+                        if (!mMediaPlayer.getVLCVout().areViewsAttached()) {
+                            mMediaPlayer.getVLCVout().attachViews(this);
+                        }
+                        mMediaPlayer.setVideoTrackEnabled(true);
+                        if (wasPlaying) {
+                            mMediaPlayer.play();
+                        }
+                    }
+                }
+
+                wasPlaying = false;
+
+            } else {
+                if (getSurfaceTexture() != mSurfaceTexture) {
+                    setSurfaceTexture(mSurfaceTexture);
+                }
             }
         }
 
     }
 
     @Override
-    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+    public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surface, int width, int height) {
         setSize(width, height);
     }
 
     @Override
-    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+    public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture surface) {
         if (mMediaPlayer != null) {
             wasPlaying = mMediaPlayer.isPlaying();
         }
 
         if (mSurfaceTexture != surface) {
             if (mSurfaceTexture != null) {
-                if (!mSurfaceTexture.isReleased()) {
-                    mSurfaceTexture.release();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (!mSurfaceTexture.isReleased()) {
+                        mSurfaceTexture.release();
+                    }
                 }
             }
             mSurfaceTexture = surface;
@@ -150,7 +161,7 @@ public class VLCTextureView extends TextureView implements TextureView.SurfaceTe
     }
 
     @Override
-    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+    public void onSurfaceTextureUpdated(@NonNull SurfaceTexture surface) {
 
     }
 

@@ -1,16 +1,9 @@
 package software.solid.fluttervlcplayer;
 
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
-import android.os.Build;
 import android.util.LongSparseArray;
 
-import androidx.annotation.RequiresApi;
-
-import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.view.TextureRegistry;
