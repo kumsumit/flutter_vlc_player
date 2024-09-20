@@ -13,9 +13,11 @@ dependencies:
 
   flutter_vlc_player:
     path: ../
-
   path_provider:
-    git: https://github.com/kumsumit/path_provider.git
+    git: https://github.com/kumsumit/path_provider.git  
+  permission_handler:
+    git: https://github.com/kumsumit/permission_handler.git
+  
 
 dev_dependencies:
   flutter_test:

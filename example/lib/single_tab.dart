@@ -6,6 +6,7 @@ import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import 'package:flutter_vlc_player_example/video_data.dart';
 import 'package:flutter_vlc_player_example/vlc_player_with_controls.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SingleTab extends StatefulWidget {
   @override
@@ -46,7 +47,7 @@ class _SingleTabState extends State<SingleTab> {
     //
     const VideoData(
       name: 'File Video 1',
-      path: 'System File Example',
+      path: '/storage/emulated/0/WhatsApp/Media/WhatsApp Video/VID-20240919-WA0001.mp4',
       type: VideoType.file,
     ),
     //
@@ -73,7 +74,7 @@ class _SingleTabState extends State<SingleTab> {
   void initState() {
     super.initState();
 
-    //
+    Future.delayed(Duration.zero,()async {await Permission.storage.request();});
     final initVideo = listVideos[selectedVideoIndex];
     switch (initVideo.type) {
       case VideoType.network:
@@ -100,19 +101,16 @@ class _SingleTabState extends State<SingleTab> {
             ]),
           ),
         );
-        break;
       case VideoType.file:
         final file = File(initVideo.path);
         _controller = VlcPlayerController.file(
           file,
         );
-        break;
       case VideoType.asset:
         _controller = VlcPlayerController.asset(
           initVideo.path,
           options: VlcPlayerOptions(),
         );
-        break;
       case VideoType.recorded:
         break;
     }
@@ -163,16 +161,12 @@ class _SingleTabState extends State<SingleTab> {
             switch (video.type) {
               case VideoType.network:
                 iconData = Icons.cloud;
-                break;
               case VideoType.file:
                 iconData = Icons.insert_drive_file;
-                break;
               case VideoType.asset:
                 iconData = Icons.all_inbox;
-                break;
               case VideoType.recorded:
                 iconData = Icons.videocam;
-                break;
             }
 
             return ListTile(
@@ -208,42 +202,41 @@ class _SingleTabState extends State<SingleTab> {
                       video.path,
                       hwAcc: HwAcc.full,
                     );
-                    break;
                   case VideoType.file:
-                    if (!mounted) break;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Copying file to temporary storage...'),
-                      ),
-                    );
-                    await Future<void>.delayed(const Duration(seconds: 1));
-                    final tempVideo = await _loadVideoToFs();
-                    await Future<void>.delayed(const Duration(seconds: 1));
-                    if (!mounted) break;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Now trying to play...'),
-                      ),
-                    );
-                    await Future<void>.delayed(const Duration(seconds: 1));
-                    if (await tempVideo.exists()) {
-                      await _controller.setMediaFromFile(tempVideo);
-                    } else {
-                      if (!mounted) break;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('File load error.'),
-                        ),
-                      );
-                    }
-                    break;
+                   await _controller.setMediaFromFile(File(video.path));
+                    // if (!mounted) break;
+                    // ScaffoldMessenger.of(context).showSnackBar(
+                    //   const SnackBar(
+                    //     content: Text('Copying file to temporary storage...'),
+                    //   ),
+                    // );
+                    // await Future<void>.delayed(const Duration(seconds: 1));
+                    // final tempVideo = await _loadVideoToFs();
+                    // await Future<void>.delayed(const Duration(seconds: 1));
+                    // if (!mounted) break;
+                    // if(context.mounted) {
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //   const SnackBar(
+                    //     content: Text('Now trying to play...'),
+                    //   ),
+                    // );
+                    // }
+                    // await Future<void>.delayed(const Duration(seconds: 1));
+                    // if (await tempVideo.exists()) {
+                    //   await _controller.setMediaFromFile(tempVideo);
+                    // } else {
+                    //   if (!mounted) break;
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     const SnackBar(
+                    //       content: Text('File load error.'),
+                    //     ),
+                    //   );
+                    // }
                   case VideoType.asset:
                     await _controller.setMediaFromAsset(video.path);
-                    break;
                   case VideoType.recorded:
                     final recordedFile = File(video.path);
                     await _controller.setMediaFromFile(recordedFile);
-                    break;
                 }
                 setState(() {
                   selectedVideoIndex = index;
