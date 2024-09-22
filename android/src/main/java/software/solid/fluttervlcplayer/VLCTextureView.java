@@ -198,11 +198,6 @@ public class VLCTextureView extends TextureView implements TextureView.SurfaceTe
         int h = this.getHeight();
 
         // Size
-        if (w > h && w < h) {
-            int i = w;
-            w = h;
-            h = i;
-        }
 
         float videoAR = (float) mVideoWidth / (float) mVideoHeight;
         float screenAR = (float) w / (float) h;

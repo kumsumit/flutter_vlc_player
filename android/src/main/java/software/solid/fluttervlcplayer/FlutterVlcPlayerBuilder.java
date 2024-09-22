@@ -51,7 +51,7 @@ public class FlutterVlcPlayerBuilder implements Messages.VlcPlayerApi {
         FlutterVlcPlayer player = vlcPlayers.get(arg.getViewId());
         //
         ArrayList<String> options = new ArrayList<String>();
-        if (arg.getOptions().size() > 0)
+        if (!arg.getOptions().isEmpty())
             for (Object option : arg.getOptions())
                 options.add((String) option);
         player.initialize(options);
